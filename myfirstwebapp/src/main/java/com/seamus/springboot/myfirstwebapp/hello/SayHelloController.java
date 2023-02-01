@@ -27,4 +27,12 @@ public class SayHelloController {
 
         return sb.toString();
     }
+
+    // JSP - one of the earliest and most frequently used Views today.
+    //"say-hello-jsp"" => sayHello.jsp
+    // under: /src/main/resources/META-INF/resources/WEB-INF/jsp/sayHello.jsp
+    @RequestMapping("say-hello-jsp")
+    public String sayHelloJsp() {
+        return "sayHello";
+    }
 }
