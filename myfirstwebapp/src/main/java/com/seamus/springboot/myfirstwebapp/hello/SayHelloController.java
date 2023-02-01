@@ -12,7 +12,19 @@ public class SayHelloController {
     @RequestMapping("say-hello")
     @ResponseBody // Returns whatever as-is to the browser directly
     public String sayHello() {
-        // Throws an error by default as it is looking for View with the given string name...
-        return "Hello! What are your learning today?";
+        StringBuffer sb = new StringBuffer();
+        sb.append("<html>");
+        sb.append("<head>");
+        sb.append("<title>Some Test Title - Changed</title>");
+        sb.append("</head>");
+        sb.append("<body>");
+        sb.append("An example HTML body. - changed");
+        sb.append("</body>");
+        sb.append("</html>");
+
+        // // Throws an error by default as it is looking for View with the given string name...
+        // return "Hello! What are your learning today?";
+
+        return sb.toString();
     }
 }
