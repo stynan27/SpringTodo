@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-MyfirstwebappApplication<myfirstwebapp>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.seamus.springboot.myfirstwebapp.MyfirstwebappApplication",
+      "projectName": "myfirstwebapp",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}
