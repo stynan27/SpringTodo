@@ -5,8 +5,11 @@
       </title>
     </head>
     <body>
-      <div>Welcome to the App!</div>
-      <div>Your Name: ${name}</div>
-      <div>Your Password: ${password}</div>
+      <div class="container">
+        <h1>Welcome ${name}</h1>
+        <!-- <div>Your Password: ${password}</div> UNSAFE!!! -->
+        <hr>
+        <a href="list-todos">Manage</a>
+      </div>
     </body>
 </html>
