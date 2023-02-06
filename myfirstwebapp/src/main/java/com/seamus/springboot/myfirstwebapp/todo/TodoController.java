@@ -5,10 +5,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+
+import jakarta.validation.Valid;
 
 @Controller
 @SessionAttributes("name")
@@ -42,7 +45,12 @@ public class TodoController {
     }
 
     @RequestMapping(value="/add-todo", method=RequestMethod.POST)
-    public String addNewTodo(ModelMap model, Todo todo) {
+    public String addNewTodo(ModelMap model, @Valid Todo todo, BindingResult result) {
+        // Check for validation errors with the Todo model
+        // such that an error page won't be displayed
+        if(result.hasErrors()) {
+            return "todo";
+        }
         // Get username using model 
         // (original model.put() in LoginController and added to current Session: @SessionAttributes("name"))
         String username = (String)model.get("name");
@@ -50,6 +58,13 @@ public class TodoController {
         // if you just return the JSP "listTodos" it will be EMPTY
         // Instead of re-populating the list, you can re-use /list-todos
         // ... via a redirect to that url endpoint.
+        return "redirect:list-todos";
+    }
+
+    @RequestMapping("/delete-todo")
+    public String deleteTodo(@RequestParam int id) {
+        // /todoService.findById();
+        todoService.deleteById(id);
         return "redirect:list-todos";
     }
 }
