@@ -3,6 +3,8 @@ package com.seamus.springboot.myfirstwebapp.todo;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -26,7 +28,8 @@ public class TodoController {
     // /list-todos
     @RequestMapping("/list-todos")
     public String listAllTodos(ModelMap model) {
-        List<Todo> todos = todoService.findByUsername("Seamus");
+        String username = getLoggedinUsername(model);
+        List<Todo> todos = todoService.findByUsername(username);
         model.addAttribute("todos", todos);
 
         return "listTodos";
@@ -36,7 +39,7 @@ public class TodoController {
     public String showNewTodoPage(ModelMap model) {
         // Get username using model 
         // (original model.put() in LoginController and added to current Session: @SessionAttributes("name"))
-        String username = (String)model.get("name");
+        String username = getLoggedinUsername(model);
         // Create an intial Todo for 2-way data binding (provides form with initial values)
         Todo todo = new Todo(0, username, "", LocalDate.now().plusYears(1), false);
         model.put("todo", todo);
@@ -53,7 +56,7 @@ public class TodoController {
         }
         // Get username using model 
         // (original model.put() in LoginController and added to current Session: @SessionAttributes("name"))
-        String username = (String)model.get("name");
+        String username = getLoggedinUsername(model);
         todoService.addTodo(username, todo.getDescription(), todo.getTargetDate(), false);
         // if you just return the JSP "listTodos" it will be EMPTY
         // Instead of re-populating the list, you can re-use /list-todos
@@ -84,11 +87,17 @@ public class TodoController {
         }
 
         // Place username in model manually (missing from form)
-        String username = (String)model.get("name");
+        String username = getLoggedinUsername(model);
         todo.setUsername(username);
 
         todoService.updateTodo(todo);
 
         return "redirect:list-todos";
+    }
+
+    private String getLoggedinUsername(ModelMap model) {
+        Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
     }
 }
