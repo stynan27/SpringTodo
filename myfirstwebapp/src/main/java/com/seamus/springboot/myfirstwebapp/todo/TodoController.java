@@ -54,7 +54,7 @@ public class TodoController {
         // Get username using model 
         // (original model.put() in LoginController and added to current Session: @SessionAttributes("name"))
         String username = (String)model.get("name");
-        todoService.addTodo(username, todo.getDescription(), LocalDate.now().plusYears(1), false);
+        todoService.addTodo(username, todo.getDescription(), todo.getTargetDate(), false);
         // if you just return the JSP "listTodos" it will be EMPTY
         // Instead of re-populating the list, you can re-use /list-todos
         // ... via a redirect to that url endpoint.
@@ -65,6 +65,30 @@ public class TodoController {
     public String deleteTodo(@RequestParam int id) {
         // /todoService.findById();
         todoService.deleteById(id);
+        return "redirect:list-todos";
+    }
+
+    @RequestMapping(value="/update-todo", method=RequestMethod.GET)
+    public String showUpdateTodoPage(@RequestParam int id, ModelMap model) {
+        // Provide model from id parameter
+        Todo todo = todoService.findById(id);
+        model.addAttribute("todo", todo);
+
+        return "todo";
+    }
+
+    @RequestMapping(value="/update-todo", method=RequestMethod.POST)
+    public String submitUpdate(ModelMap model, @Valid Todo todo, BindingResult result) {
+        if(result.hasErrors()) {
+            return "todo";
+        }
+
+        // Place username in model manually (missing from form)
+        String username = (String)model.get("name");
+        todo.setUsername(username);
+
+        todoService.updateTodo(todo);
+
         return "redirect:list-todos";
     }
 }

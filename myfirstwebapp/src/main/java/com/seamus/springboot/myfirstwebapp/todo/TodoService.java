@@ -7,6 +7,8 @@ import java.util.function.Predicate;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.validation.Valid;
+
 @Service
 public class TodoService {
     // Use of static here indicates shared object space (all instances share this list)
@@ -39,5 +41,20 @@ public class TodoService {
             // bean name -> for every bean check id
             = todo -> todo.getId() == id;
         todos.removeIf(predicate);
+    }
+
+    public Todo findById(int id) {
+        Predicate<? super Todo> predicate
+            // bean name -> for every bean check id
+            = todo -> todo.getId() == id;
+        // filter list of todos to one todo
+        Todo todo = todos.stream().filter(predicate).findFirst().get();
+
+        return todo;
+    }
+
+    public void updateTodo(@Valid Todo todo) {
+        deleteById(todo.getId());
+        todos.add(todo);
     }
 }
