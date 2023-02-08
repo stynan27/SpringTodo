@@ -19,11 +19,11 @@ public class TodoService {
     // static list of todos
     static {
         todos.add(new Todo(++todosCount, "Seamus", 
-            "Learn AWS", LocalDate.now().plusYears(1), false));
+            "Learn AWS 1", LocalDate.now().plusYears(1), false));
         todos.add(new Todo(++todosCount, "Seamus", 
-            "Learn DevOps", LocalDate.now().plusYears(2), false));
+            "Learn DevOps 1", LocalDate.now().plusYears(2), false));
         todos.add(new Todo(++todosCount, "Seamus", 
-            "Learn Fullstack", LocalDate.now().plusYears(3), false));
+            "Learn Fullstack 1", LocalDate.now().plusYears(3), false));
     }
 
     public List<Todo> findByUsername(String username) {

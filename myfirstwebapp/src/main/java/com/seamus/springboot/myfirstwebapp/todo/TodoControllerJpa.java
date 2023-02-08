@@ -15,21 +15,22 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import jakarta.validation.Valid;
 
-//@Controller -> no longer loaded by Spring FW
+@Controller
 @SessionAttributes("name")
-public class TodoController {
+public class TodoControllerJpa {
 
-    private TodoService todoService;
+    private TodoRepository todoRepository;
     
-    public TodoController(TodoService todoService) {
-        this.todoService = todoService;
+    public TodoControllerJpa(TodoRepository todoRepository) {
+        this.todoRepository = todoRepository;
     }
 
     // /list-todos
     @RequestMapping("/list-todos")
     public String listAllTodos(ModelMap model) {
         String username = getLoggedinUsername(model);
-        List<Todo> todos = todoService.findByUsername(username);
+
+        List<Todo> todos = todoRepository.findByUsername(username);
         model.addAttribute("todos", todos);
 
         return "listTodos";
@@ -57,7 +58,8 @@ public class TodoController {
         // Get username using model 
         // (original model.put() in LoginController and added to current Session: @SessionAttributes("name"))
         String username = getLoggedinUsername(model);
-        todoService.addTodo(username, todo.getDescription(), todo.getTargetDate(), false);
+        todo.setUsername(username);
+        todoRepository.save(todo);
         // if you just return the JSP "listTodos" it will be EMPTY
         // Instead of re-populating the list, you can re-use /list-todos
         // ... via a redirect to that url endpoint.
@@ -66,15 +68,14 @@ public class TodoController {
 
     @RequestMapping("/delete-todo")
     public String deleteTodo(@RequestParam int id) {
-        // /todoService.findById();
-        todoService.deleteById(id);
+        todoRepository.deleteById(id);
         return "redirect:list-todos";
     }
 
     @RequestMapping(value="/update-todo", method=RequestMethod.GET)
     public String showUpdateTodoPage(@RequestParam int id, ModelMap model) {
         // Provide model from id parameter
-        Todo todo = todoService.findById(id);
+        Todo todo = todoRepository.findById(id).get();//todoService.findById(id);
         model.addAttribute("todo", todo);
 
         return "todo";
@@ -90,7 +91,7 @@ public class TodoController {
         String username = getLoggedinUsername(model);
         todo.setUsername(username);
 
-        todoService.updateTodo(todo);
+        todoRepository.save(todo);
 
         return "redirect:list-todos";
     }
